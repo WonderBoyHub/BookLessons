@@ -107,3 +107,12 @@ the latest product requirements:
 - Use `manual_review_required` and `fraud_risk_score` to decide whether to show
   the join link immediately or hold the booking until the tutor clears it in
   the Blazor dashboard.
+
+## Implementation blueprint
+
+See [`docs/system_architecture.md`](docs/system_architecture.md) for a detailed
+plan that ties the database schema to the Next.js (App Router) frontend on
+Vercel Hobby, the Blazor Server operations console on Azure, Auth.js sessions,
+Stripe payment flows, SSE chat streaming, deterministic Jitsi rooms, and GDPR
+process operations. The document includes recommended configuration snippets,
+API route outlines, and operational checklists for EU-hosted deployments.
