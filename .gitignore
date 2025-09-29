@@ -1,0 +1,16 @@
+bin/
+obj/
+*.user
+*.swp
+*.DS_Store
+.vscode/
+*.suo
+*.userprefs
+
+# Node artifacts
+.next/
+.env*
+appsettings*.json
+apps/web/.next/
+apps/web/node_modules/
+apps/web/.env.local
