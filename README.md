@@ -21,6 +21,74 @@ the latest product requirements:
   audit trails to operationalise GDPR compliance in EU regions
 - lesson notes, materials, and study artefacts tailored to Japanese tutoring
 
+## Running the Next.js frontend locally
+
+The Next.js App Router project lives under `apps/web` and is configured for
+Auth.js (NextAuth), Stripe webhooks, SSE chat streaming, and GDPR user flows.
+
+1. Install [Node.js 18+](https://nodejs.org/en/download) and pnpm or npm.
+2. Copy `.env.example` to `.env.local` and fill in the secrets exposed by the
+   ASP.NET Core API (Auth login endpoint, Stripe keys, etc.).
+3. Install dependencies and start the development server:
+
+   ```bash
+   cd apps/web
+   npm install
+   npm run dev
+   ```
+
+4. Vercel hobby deployments should keep EU data residency by leaving the
+   provided `vercel.json` untouched (`regions: ['fra1']`). Functions proxying to
+   the API (Stripe webhook, GDPR requests, chat SSE) are already pinned to the
+   same region.
+5. Visit `http://localhost:3000` to browse the marketing page, bookings
+   dashboard, chat with SSE streaming, GDPR control center, and privacy policy.
+
+## Running the .NET API locally
+
+The `src/BookLessons.Api` project provides the Blazor Server-friendly backend
+API that implements bookings, chat, Stripe payments, fraud signals, GDPR
+requests, and the deterministic Jitsi room naming described in the project
+plan.
+
+1. Install the [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+   and ensure a Postgres database is available (Neon is the recommended free
+   option).
+2. Apply the migrations listed below so that the schema matches the entity
+   model used by the API.
+3. Create an `appsettings.Development.json` file alongside `Program.cs` with at
+   least the following structure:
+
+   ```json
+   {
+     "ConnectionStrings": {
+       "Default": "Host=<host>;Database=<db>;Username=<user>;Password=<pw>"
+     },
+     "Stripe": {
+       "SecretKey": "sk_test_xxx",
+       "WebhookSecret": "whsec_xxx"
+     },
+     "Chat": {
+       "Sse": {
+         "PollIntervalSeconds": 3,
+         "LookbackMinutes": 5
+       }
+     }
+   }
+   ```
+
+4. Run the API:
+
+   ```bash
+   dotnet run --project src/BookLessons.Api/BookLessons.Api.csproj
+   ```
+
+5. The minimal API hosts Swagger UI at `https://localhost:5001/swagger` (or the
+   port assigned by Kestrel) with endpoints for bookings, chat, payments, fraud
+   signals, and GDPR requests. The chat SSE route is exposed at
+   `/api/chat/threads/{threadId}/stream` and is safe to deploy to Azure Web App
+   or Vercel edge functions pinned to EU regions.
+
 ## Getting started on Neon (free Postgres)
 
 1. Create a new Neon project and database (the default Postgres 15 branch

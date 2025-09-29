@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "regions": ["fra1"],
+  "functions": {
+    "api/**/*": {
+      "regions": ["fra1"],
+      "maxDuration": 60
+    }
+  },
+  "env": {
+    "NEXTAUTH_URL": "https://booklessons.vercel.app"
+  }
+}
